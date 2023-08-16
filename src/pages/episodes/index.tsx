@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from "next/link";
 import PodcastEpisodes from "@/components/PodcastEpisodes";
 import SEO from "@/components/SEO";
 
@@ -32,10 +33,9 @@ export default function Episodes({ podcastSeries }: dataType) {
 
   return (
     <>
-    <SEO title="Larks Podcast | Episodes" />
-    <main id="larkspodcast-episodes">
-
-      <section id="larks-all-episodes" className="px-10 mb-10">
+      <SEO title="Larks Podcast | Episodes" />
+      <main id="larkspodcast-episodes">
+        {/* <section id="larks-all-episodes" className="px-10 mb-10">
         <div
           id="episode-search"
           className="flex justify-center items-center h-auto"
@@ -58,8 +58,17 @@ export default function Episodes({ podcastSeries }: dataType) {
         <div className="overflow-y-scroll h-[35rem] py-5">
           <PodcastEpisodes episodes={podcastEpisodes} />
         </div>
-      </section>
-    </main>
+      </section> */}
+        <section className="h-[45rem] md:h-screen flex flex-col items-center justify-center text-center">
+          <p>Hello 👋🏿</p>
+          <p className="my-5">This page is currently undergoing maintenace 🛠</p>
+          <p className="md:px-[10rem]">
+            At the meantime, you can listen to the latest episode and other
+            episodes on your streaming platforms. Visit the{" "}
+            <Link href="/" className="text-[#fe982ccc] underline">Home</Link> page for more.
+          </p>
+        </section>
+      </main>
     </>
   );
 }
