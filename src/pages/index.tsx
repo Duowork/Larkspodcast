@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { parseString } from "xml2js";
 import useSWR from "swr"
+import Loader from "@/components/loader";
 
 // Images
 import ellipse from "../assets/images/larks-ellipse.svg";
@@ -68,9 +69,10 @@ const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then((res)
 
 export default function Home({ podcastSeries, latestPodcast }: any) {
   const { data, error } = useSWR('https://anchor.fm/s/37d339e8/podcast/rss', fetcher);
-  const podcastEpisodes = data !== undefined && JSON.parse(parseXMLStringAsJSON(data));
+  // const podcastEpisodes = data ? JSON.parse(parseXMLStringAsJSON(data)) : [];
+  const podcastEpisodes: any[] = [];
 
-  if (error || !data) {
+  if (error) {
     return (
       <main className="h-screen">
         <div

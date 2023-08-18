@@ -55,6 +55,10 @@ export default memo(function PodcastEpisodes({ episodes }: { episodes: any[] }) 
     return date.toLocaleString(undefined, { month: "long", day: "numeric" });
   };
 
+  if (episodes.length === 0) {
+    return (<p className="text-center text-gray-400 pb-10 px-10 text-2xl sm:text-3xl md:text-3xl lg:text-5l">No episode available</p>)
+  }
+
   return (
     <div className="all-episodes grid grid-cols-1 gap-4 justify-items-center lg:w-[650px]">
       {episodes.map((episode: any, idx: number) => {
