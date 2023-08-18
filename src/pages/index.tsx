@@ -69,8 +69,7 @@ const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then((res)
 
 export default function Home({ podcastSeries, latestPodcast }: any) {
   const { data, error } = useSWR('https://anchor.fm/s/37d339e8/podcast/rss', fetcher);
-  // const podcastEpisodes = data ? JSON.parse(parseXMLStringAsJSON(data)) : [];
-  const podcastEpisodes: any[] = [];
+  const podcastEpisodes = data ? JSON.parse(parseXMLStringAsJSON(data)) : [];
 
   if (error) {
     return (
