@@ -12,7 +12,7 @@ import addressIcon from "../assets/icons/alternate_email.svg";
 export default function Nav() {
   const [showNav, setShowNav] = React.useState(false);
 
-  const browserWindow = window !== undefined;
+  const browserWindow = typeof window !== "undefined";
 
   if (browserWindow) {
     window.addEventListener("scroll", () => {

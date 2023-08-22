@@ -6,9 +6,7 @@ import SEO from "@/components/SEO";
 import localFont from "next/font/local";
 import Image from "next/image";
 import Link from "next/link";
-import { parseString } from "xml2js";
-import useSWR from "swr"
-import Loader from "@/components/loader";
+import parseXMLStringAsJSON from "utils/parseXML";
 
 // Images
 import ellipse from "../assets/images/larks-ellipse.svg";
@@ -33,59 +31,8 @@ const yellowtailFont = localFont({
   src: "../assets/fonts/yellowtail/yellowtail-regular.ttf",
 });
 
-const parseXMLStringAsJSON = (xmlString: string): string => {
-  let data = "";
-
-  if (xmlString === undefined) {
-    data = xmlString
-  }
-
-  parseString(xmlString, (error, result) => {
-    if (error) {
-      console.log(error);
-
-      return error;
-    }
-
-    const podcastEpisodes = result.rss.channel[0].item[0];
-    const datePublished = new Date(podcastEpisodes.pubDate[0]).getTime();
-
-    data = JSON.stringify([
-      {
-        audioUrl: podcastEpisodes.enclosure[0].$.url,
-        datePublished: datePublished / 1000,
-        description: podcastEpisodes.description[0],
-        imageUrl: podcastEpisodes["itunes:image"][0].$.href,
-        name: podcastEpisodes.title[0],
-        uuid: podcastEpisodes.guid[0]["_"],
-      },
-    ]);
-  });
-
-  return data;
-};
-
-const fetcher = (...args: Parameters<typeof fetch>) => fetch(...args).then((res) => res.text());
-
-export default function Home({ podcastSeries, latestPodcast }: any) {
-  const { data, error } = useSWR('https://anchor.fm/s/37d339e8/podcast/rss', fetcher);
-  const podcastEpisodes = data ? JSON.parse(parseXMLStringAsJSON(data)) : [];
-
-  if (error) {
-    return (
-      <main className="h-screen">
-        <div
-          id="network-error-prompt"
-          className="h-full flex justify-center mt-[25rem] p"
-        >
-          <p className="custom-text-color-primary text-2xl sm:text-3xl mx-10 md:mx-20 lg:mx-[15rem] text-center leading-tight">
-            Something went wrong. It's not you, it's us!
-            Please try again later.
-          </p>
-        </div>
-      </main>
-    );
-  }
+export default function Home({ podcastSeries }: any) {
+  const podcastEpisodes = podcastSeries ? JSON.parse(parseXMLStringAsJSON(podcastSeries, 1)) : [];
 
   return (
     <>

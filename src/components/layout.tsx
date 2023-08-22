@@ -1,40 +1,31 @@
 /* eslint-disable react/no-unescaped-entities */
 /*
-  Fetching data is done on the Layout componet and pass via 
-  React.cloneElement module 'children' prop. The 'children' prop
-  render the pages to the Layout components. 
+  Fetching data is done on the Layout componet and passed via 
+  React.cloneElement module tot the 'children' prop. The 'children' prop
+  render the pages in the Layout components. 
 */
 
-import { Fragment, useEffect, useState, cloneElement } from "react";
+import { Fragment, cloneElement } from "react";
 import { useRouter } from "next/router";
-import { getPodcastSeries, graphQLRequest } from "@/graphQL/gql";
 import SEO from "./SEO";
 import Loader from "./loader";
 import Nav from "./nav";
 import Footer from "./footer";
+import useSWR from "swr";
+
+const fetcher = (...args: Parameters<typeof fetch>) =>
+  fetch(...args).then((res) => res.text());
 
 export default function Layout({ children }: any) {
-  const [podcastSeries, setPodcastSeries] = useState();
-  const [error, setError] = useState(false);
   const router = useRouter();
-
-  useEffect(() => {
-    const componentIsMounted = true;
-
-    async function fetchPodcastSeries() {
-      try {
-        const { getPodcastSeries: data } = await graphQLRequest(
-          getPodcastSeries
-        );
-        if (componentIsMounted) setPodcastSeries(data);
-      } catch (error) {
-        if (componentIsMounted) setError(true);
-      }
-    }
-    fetchPodcastSeries();
-  }, []);
+  const { data, error, isLoading } = useSWR(
+    "https://anchor.fm/s/37d339e8/podcast/rss",
+    fetcher,
+  );
 
   if (error) {
+    console.log(error);
+
     return (
       <main className="h-screen">
         <SEO
@@ -54,7 +45,7 @@ export default function Layout({ children }: any) {
     );
   }
 
-  if (podcastSeries === undefined) {
+  if (isLoading === undefined) {
     return <Loader />;
   }
 
@@ -67,9 +58,9 @@ export default function Layout({ children }: any) {
 
       {router.pathname === "/" ? null : <Nav />}
 
-      {podcastSeries !== undefined
+      {data !== undefined
         ? cloneElement(children, {
-            podcastSeries: podcastSeries,
+            podcastSeries: data,
           })
         : children}
 
