@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 /*
-  Fetching data is done on the Layout componet and passed via 
+  Fetching data is done on the Layout component and passed via 
   React.cloneElement module tot the 'children' prop. The 'children' prop
   render the pages in the Layout components. 
 */
