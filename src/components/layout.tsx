@@ -23,20 +23,41 @@ export default function Layout({ children }: any) {
     fetcher,
   );
 
-  if (error) {
-    console.log(error);
+  if (isLoading) {
+    return <Loader />;
+  }
 
+  if (!error) {
     return (
-      <main className="h-screen">
+      <Fragment>
+        <SEO
+          title="Larks Podcast"
+          description="LARKS podcast that defies the norms of being specific, straightforward and concise; It embraces the ridiculous, the silly and the superficial and It’s more about the laffs than the feels."
+        />
+
+        {router.pathname === "/" ? null : <Nav />}
+
+        {data !== undefined
+          ? cloneElement(children, {
+              podcastSeries: data,
+            })
+          : children}
+
+        {router.pathname === "/404" ? null : <Footer />}
+      </Fragment>
+    );
+  } else {
+    return (
+      <main className="h-[45rem]">
         <SEO
           title="Larks Podcast | Error"
           description="LARKS podcast that defies the norms of being specific, straightforward and concise; It embraces the ridiculous, the silly and the superficial and It’s more about the laffs than the feels."
         />
         <div
           id="network-error-prompt"
-          className="h-full flex justify-center mt-[25rem] p"
+          className="h-full flex justify-center items-center"
         >
-          <p className="custom-text-color-primary text-2xl sm:text-3xl mx-10 md:mx-20 lg:mx-[15rem] text-center leading-tight">
+          <p className="custom-text-color-primary text-1xl sm:text-3xl mx-10 md:mx-20 lg:mx-[15rem] text-center leading-tight">
             There seem to be a network error! Check that you're connected to the
             internet or try again later
           </p>
@@ -44,27 +65,4 @@ export default function Layout({ children }: any) {
       </main>
     );
   }
-
-  if (isLoading === undefined) {
-    return <Loader />;
-  }
-
-  return (
-    <Fragment>
-      <SEO
-        title="Larks Podcast"
-        description="LARKS podcast that defies the norms of being specific, straightforward and concise; It embraces the ridiculous, the silly and the superficial and It’s more about the laffs than the feels."
-      />
-
-      {router.pathname === "/" ? null : <Nav />}
-
-      {data !== undefined
-        ? cloneElement(children, {
-            podcastSeries: data,
-          })
-        : children}
-
-      {router.pathname === "/404" ? null : <Footer />}
-    </Fragment>
-  );
 }

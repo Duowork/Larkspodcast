@@ -1,107 +1,93 @@
 import React, { useState } from "react";
 
 export default function NewsletterInput() {
-  const [state, setState] = useState({
-    isLoading: false,
-    email: "",
-    message: {
-      message: "",
-      color: "",
-    },
-    error: "",
-  });
+  const defaultMessageValue = {
+    message: "",
+    color: "",
+  };
+
+  const [emailInput, setEmailInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [message, setMessage] = useState(defaultMessageValue);
 
   const handleSubmit = async () => {
-    setState((state) => ({ ...state, isLoading: true }));
-
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-
+    const errorMessageColor = "text-red-800"
+    
     // match email
-    if (state.email === "") {
-      setState((state) => ({
+    if (emailInput === "") {
+      setMessage((state) => ({
         ...state,
-        isLoading: false,
-        message: {
-          message: "Email field can not be empty 👎🏿",
-          color: "text-red-800",
-        },
+        message: "Email field can not be empty 👎🏿",
+        color: errorMessageColor,
       }));
       return;
     }
 
-    if (emailRegex.test(state.email) === false) {
-
-      console.log(emailRegex.test(state.email));
-      setState((state) => ({
+    if (!emailRegex.test(emailInput)) {
+      setMessage((state) => ({
         ...state,
-        isLoading: false,
-        message: {
-          message: "Invalid email 👎🏿",
-          color: "text-red-800",
-        },
+        message: "Invalid email 👎🏿",
+        color: errorMessageColor,
       }));
       return;
     }
 
     try {
-      const res = await fetch("/api/subscriber", {
+      setIsLoading(!isLoading);
+
+      const apiPublickey = process.env.NEXT_PUBLIC_NEWSLETTER_API_KEY
+      const apiPrivateKey = process.env.NEXT_PUBLIC_NEWSLETTER_SECRET_KEY;
+
+      const { error, data } = await fetch("/api/subscriber", {
         method: "POST",
         headers: {
+          Authorization: `Basic ${Buffer.from(`${apiPublickey}:${apiPrivateKey}`).toString('base64')}`,
           "Content-Type": "application/json;charset=utf-8",
         },
         body: JSON.stringify({
-          name: "Lark",
-          campaign: { campaignId: "f1jOH" },
-          email: state.email,
+          IsExcludedFromCampaigns: true,
+          name: "New Contact",
+          email: emailInput,
         }),
       }).then((data) => data.json());
 
-      // Email added to contact list.
-      if (res.status === 202) {
-        setState((state) => ({
+      // Email created added to contact list.
+      if (data.status === 201) {
+        setIsLoading(false);
+        setEmailInput("");
+        setMessage((state) => ({
           ...state,
-          isLoading: false,
-          email: "",
-          message: {
-            message: "You're now subscribed! TTYS 🎉📱",
-            color: "text-green-800",
-          },
+          message: "You're now subscribed! TTYS 🎉📱",
+          color: "text-green-800",
         }));
       }
 
       // Conflict with data. Possibly data already exist.
-      if (res.status === 409) {
-        setState((state) => ({
+      if (data.status !== 201) {
+        setIsLoading(false);
+        setMessage((state) => ({
           ...state,
-          isLoading: false,
-          email: "",
-          message: {
-            message: "This email is aready subscribed 👎🏿",
-            color: "text-red-800",
-          },
+          message: `Something is wrong!. Please try another email 📧`,
+          color: errorMessageColor,
         }));
       }
 
-      if (res.status === 500) {
-        setState((state) => ({
+      if (error) {
+        setIsLoading(false);
+        setMessage((state) => ({
           ...state,
-          isLoading: false,
-          email: "",
-          message: {
-            message: "There seem to be problem! Try again later ⏳",
-            color: "text-red-800",
-          },
+          message: "Unable to send email 👎🏿",
+          color: errorMessageColor,
         }));
       }
     } catch (e) {
-      setState((state) => ({
+      setIsLoading(false);
+      setMessage((state) => ({
         ...state,
-        isLoading: false,
-        email: "",
-        message: {
-          message: "Unable to send email!",
-          color: "text-red-800",
-        },
+        message: "Unable to send email 👎🏿",
+        color: "text-red-800",
       }));
     }
   };
@@ -114,15 +100,13 @@ export default function NewsletterInput() {
           <input
             type="email"
             name=""
-            value={state.email}
+            value={emailInput}
             id="newsletter-input"
             placeholder="Enter your email"
             title="Larks podcast newsletter"
             autoComplete="true"
             className="outline-0 border-0 rounded-l-md w-[70%] h-[40px] custom-bg-color-primary p-5"
-            onChange={(e) =>
-              setState((state) => ({ ...state, email: e.target.value }))
-            }
+            onChange={(e) => setEmailInput(e.target.value)}
           />
           <button
             type="button"
@@ -133,12 +117,10 @@ export default function NewsletterInput() {
             Sign Up
           </button>
         </div>
-        <div className={`${state.isLoading ? "loader" : "hidden"} ml-2`}></div>
+        <div className={`${isLoading ? "loader" : "hidden"} ml-2`}></div>
       </div>
-      {state.message.message ? (
-        <small className={`${state.message.color}`}>
-          {state.message.message}
-        </small>
+      {message.message ? (
+        <small className={`${message.color}`}>{message.message}</small>
       ) : null}
     </div>
   );
