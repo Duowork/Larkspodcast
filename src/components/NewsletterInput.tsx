@@ -37,13 +37,10 @@ export default function NewsletterInput() {
     try {
       setIsLoading(!isLoading);
 
-      const apiPublickey = process.env.NEXT_PUBLIC_NEWSLETTER_API_KEY
-      const apiPrivateKey = process.env.NEXT_PUBLIC_NEWSLETTER_SECRET_KEY;
-
       const { error, data } = await fetch("/api/subscriber", {
         method: "POST",
         headers: {
-          Authorization: `Basic ${Buffer.from(`${apiPublickey}:${apiPrivateKey}`).toString('base64')}`,
+          Authorization: `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_NEWSLETTER_API_KEY}:${process.env.NEXT_PUBLIC_NEWSLETTER_SECRET_KEY}`).toString('base64')}`,
           "Content-Type": "application/json;charset=utf-8",
         },
         body: JSON.stringify({
