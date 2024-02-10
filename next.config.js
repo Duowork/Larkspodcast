@@ -12,6 +12,8 @@ const nextConfig = {
   // Set up image optimization
   images: {
     domains: ["d3t3ozftmdmh3i.cloudfront.net"],
+    unoptimized: true,
+    
   },
   // SASS
   sassOptions: {
