@@ -76,7 +76,5 @@ jobs:
         with:
           server: ftp.larkspodcast.com
           username: larkspod
-          password: ${{ secrets.ftp_password }}
-          protocol: ftp
-          port: 21
+          password: ${{ secrets.FTP_PASSWORD }}
 
