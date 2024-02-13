@@ -24,7 +24,7 @@ const nextConfig = {
     return [
       {
         source: "/api/subscriber",
-        destination: "https://api.getresponse.com/contacts",
+        destination: "https://api.mailjet.com/v3/REST/contact",
       },
     ];
   },

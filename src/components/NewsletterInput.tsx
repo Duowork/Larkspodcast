@@ -8,7 +8,6 @@ export default function NewsletterInput() {
 
   const [emailInput, setEmailInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [message, setMessage] = useState(defaultMessageValue);
 
   const handleSubmit = async () => {
@@ -75,7 +74,7 @@ export default function NewsletterInput() {
         setIsLoading(false);
         setMessage((state) => ({
           ...state,
-          message: "Unable to send email 👎🏿",
+          message: "Unable to sign up email 👎🏿",
           color: errorMessageColor,
         }));
       }
@@ -83,7 +82,7 @@ export default function NewsletterInput() {
       setIsLoading(false);
       setMessage((state) => ({
         ...state,
-        message: "Unable to send email 👎🏿",
+        message: "Unable to sign up email 👎🏿",
         color: "text-red-800",
       }));
     }
