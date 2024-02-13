@@ -77,4 +77,21 @@ jobs:
           server: ftp.larkspodcast.com
           username: larkspod
           password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./out
+          server-dir: public_html
+          exclude: |
+            **/src/**
+            **/public/**
+            **/.next/**
+            .eslintrc.json
+            .gitignore
+            .hintrc
+            .fonts.d.ts
+            next.config.js
+            package-lock.json
+            package.json
+            postcss.config.js
+            README.md
+            tailwind.config.js
+            tsconfig.json
 
