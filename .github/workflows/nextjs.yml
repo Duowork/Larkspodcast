@@ -77,7 +77,7 @@ jobs:
           server: ftp.larkspodcast.com
           username: larkspod
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./out
+          local-dir: ./out/
           server-dir: public_html
           exclude: |
             **/src/**
