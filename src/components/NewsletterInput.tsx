@@ -12,8 +12,8 @@ export default function NewsletterInput() {
 
   const handleSubmit = async () => {
     const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-    const errorMessageColor = "text-red-800"
-    
+    const errorMessageColor = "text-red-800";
+
     // match email
     if (emailInput === "") {
       setMessage((state) => ({
@@ -36,18 +36,23 @@ export default function NewsletterInput() {
     try {
       setIsLoading(!isLoading);
 
-      const { error, data } = await fetch("/api/subscriber", {
-        method: "POST",
-        headers: {
-          Authorization: `Basic ${Buffer.from(`${process.env.NEXT_PUBLIC_NEWSLETTER_API_KEY}:${process.env.NEXT_PUBLIC_NEWSLETTER_SECRET_KEY}`).toString('base64')}`,
-          "Content-Type": "application/json;charset=utf-8",
+      const { error, data } = await fetch(
+        "https://api.mailjet.com/v3/REST/contact",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Basic ${Buffer.from(
+              `${process.env.NEXT_PUBLIC_NEWSLETTER_API_KEY}:${process.env.NEXT_PUBLIC_NEWSLETTER_SECRET_KEY}`,
+            ).toString("base64")}`,
+            "Content-Type": "application/json;charset=utf-8",
+          },
+          body: JSON.stringify({
+            IsExcludedFromCampaigns: true,
+            name: "New Contact",
+            email: emailInput,
+          }),
         },
-        body: JSON.stringify({
-          IsExcludedFromCampaigns: true,
-          name: "New Contact",
-          email: emailInput,
-        }),
-      }).then((data) => data.json());
+      ).then((data) => data.json());
 
       // Email created added to contact list.
       if (data.status === 201) {
@@ -70,20 +75,22 @@ export default function NewsletterInput() {
         }));
       }
 
-      if (error) {
+      /*if (error) {
         setIsLoading(false);
         setMessage((state) => ({
           ...state,
           message: "Unable to sign up email 👎🏿",
           color: errorMessageColor,
         }));
-      }
+      }*/
     } catch (e) {
+      console.log(e);
+
       setIsLoading(false);
       setMessage((state) => ({
         ...state,
         message: "Unable to sign up email 👎🏿",
-        color: "text-red-800",
+        color: errorMessageColor,
       }));
     }
   };
