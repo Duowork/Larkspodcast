@@ -37,7 +37,7 @@ export default function NewsletterInput() {
       setIsLoading(!isLoading);
 
       const { error, data } = await fetch(
-        "https://api.mailjet.com/v3/REST/contact",
+        "https://larks-proxy.larkspodcast.workers.dev/corsproxy/",
         {
           method: "POST",
           headers: {
